@@ -1,9 +1,9 @@
 ---
 - name: Install, Configure, and Start httpd
-  
+
   hosts: webservers
   remote_user: ansibleop
-  become: yes
+  become: true
 
   tasks:
     - name: Installing httpd package

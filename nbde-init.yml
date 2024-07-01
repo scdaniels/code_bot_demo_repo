@@ -11,19 +11,17 @@
 
   hosts: all
   remote_user: ansibleop
-  become: yes
+  become: true
 
   tasks:
     - name: Update or Install the latest clevis packages
-      yum:
+      register: yum_update
+      ansible.builtin.yum:
         name:
           - clevis
           - clevis-luks
           - clevis-dracut
         state: latest
-      register: yum_update
 
     - name: Update the LUKS password on the Tang server(s)
-      ping:
-
-...
+      ansible.builtin.ping:

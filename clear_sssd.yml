@@ -3,14 +3,14 @@
   hosts: infservers
   tasks:
     - name: stop the sssd service
-      service:
+      ansible.builtin.service:
         name: sssd
         state: stopped
 
     - name: clear the sssd cache
-      command: "sss_cache -E"
+      ansible.builtin.command: sss_cache -E
 
     - name: start the sssd service
-      service:
+      ansible.builtin.service:
         name: sssd
         state: started
