@@ -10,26 +10,25 @@
 #
 - name: Reboot host and wait for it to come back online
   hosts: all
-  gather_facts: no
-  become: yes
- 
+  gather_facts: false
+  become: true
+
   tasks:
     - name: Restart the system
-      shell: sleep 2 && shutdown -r now "Reboot post patching via Ansible"
       async: 1
       poll: 0
       ignore_errors: true
+      ansible.builtin.shell: sleep 2 && shutdown -r now "Reboot post patching via Ansible"
 
     - name: Wait for the server to resume operation
-      wait_for:
+      become: false
+      delegate_to: localhost
+      ansible.builtin.wait_for:
         host: "{{ inventory_hostname }}"
         port: 22
         state: started
         delay: 25
         timeout: 200
-      become: false
-      delegate_to: localhost
 
     - name: Invoke Ping module on the host to verify that it is up
-      ping:
-...
+      ansible.builtin.ping:

@@ -7,52 +7,50 @@
 - name: Patch process for RHEL
   hosts: all
   remote_user: ansibleop
-  become: yes
+  become: true
 
   tasks:
-
     - name: Update the Change Order
-      debug:
+      ansible.builtin.debug:
         msg: Updating the Change Order to flag host update
 
     - name: Perform Backup or Snapshot
-      debug:
+      ansible.builtin.debug:
         msg: Initiating backup/snapshot
 
     - name: Disable Monitoring of system
-      debug:
-        msg:  Disable alerts for system during the patch process
+      ansible.builtin.debug:
+        msg: Disable alerts for system during the patch process
 
     - name: Install the latest patches allowed by the Content View
-      yum:
-        name: '*'
-        state: latest
-        # exclude: kernel*
       register: yum_update
+      ansible.builtin.yum:
+        name: "*"
+        state: latest
+    # exclude: kernel*
 
     - name: Restart the system
-      reboot:
+      when: yum_update.changed
+      ansible.builtin.reboot:
         msg: Automated reboot initiated via Ansible Tower automation
         post_reboot_delay: 25
-        reboot_timeout: 200      
-      when: yum_update.changed
+        reboot_timeout: 200
 
     - name: Install the kpatch RPM
-      yum:
+      ansible.builtin.yum:
         name: kpatch
         state: latest
 
     - name: Start the kpatch.service
-      service:
+      ansible.builtin.service:
         name: kpatch.service
-        enabled: yes
+        enabled: true
         state: started
 
     - name: Enable Monitoring of system
-      debug:
-        msg:  Enable monitoring
+      ansible.builtin.debug:
+        msg: Enable monitoring
 
     - name: Close Change Order
-      debug:
-        msg:  Add logs to change order and close it
-...
+      ansible.builtin.debug:
+        msg: Add logs to change order and close it

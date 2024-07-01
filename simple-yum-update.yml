@@ -8,16 +8,14 @@
 - name: Update all available packages with yum
   hosts: all
   remote_user: ansibleop
-  become: yes
+  become: true
 
   tasks:
     - name: Install the latest patches allowed by the Content View
-      yum:
-        name: '*'
-        state: latest
       register: yum_update
+      ansible.builtin.yum:
+        name: "*"
+        state: latest
 
     - name: Invoke Ping module on the host to verify that it is up
-      ping:
-
-...
+      ansible.builtin.ping:

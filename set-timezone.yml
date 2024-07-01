@@ -10,10 +10,9 @@
 
   hosts: all
   remote_user: ansibleop
-  become: yes
+  become: true
 
   tasks:
     - name: Set the default timezone to America/Chicago
-      timezone:
-        name:  "America/Chicago"
-...
+      community.general.timezone:
+        name: America/Chicago
